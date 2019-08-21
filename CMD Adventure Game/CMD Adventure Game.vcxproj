@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -100,6 +101,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,7 +125,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Attributes.cpp" />
+    <ClCompile Include="Battle.cpp" />
+    <ClCompile Include="Enemies.cpp" />
+    <ClCompile Include="Events.cpp" />
+    <ClCompile Include="Humanoid.cpp" />
+    <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="Items.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="Rooms.cpp" />
+    <ClCompile Include="Storage.cpp" />
+    <ClCompile Include="Tools.cpp" />
+    <ClCompile Include="UI.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Attributes.h" />
+    <ClInclude Include="Battle.h" />
+    <ClInclude Include="Enemies.h" />
+    <ClInclude Include="Events.h" />
+    <ClInclude Include="Humanoid.h" />
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="Items.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="Rooms.h" />
+    <ClInclude Include="Storage.h" />
+    <ClInclude Include="Tools.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
