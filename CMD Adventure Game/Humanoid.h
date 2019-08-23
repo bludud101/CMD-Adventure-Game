@@ -45,10 +45,10 @@ class Humanoid: public Attributes
 		void giveRandItems(int, int, int);
 		void decrimentRandEquipped();
 		void decrimentEquippedWeapon();
+		int getItemInteractions() const { return item_interactions; }
 	private:
 		vector<Item> inventory;
 		string humanoid_name;
-		int max_health = 50;
-		int max_hunger = 30;
+		int max_health = 50, max_hunger = 30, item_interactions = 0;
 };
 #endif

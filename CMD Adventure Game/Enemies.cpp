@@ -18,7 +18,7 @@ vector<vector<Item>> item_sets
 */
 Humanoid Enemies::makeEnemy(int difficulty)
 {
-	int rand_enemy = Tools::randNum(0, enemy_names.size());
+	int rand_enemy = Tools::randNum(0, enemy_names.size() - 1);
 	Humanoid enemy(enemy_names[rand_enemy]);
 	enemy.setRandStats(Tools::randNum(1,4));
 	enemy.addItem(Items::returnItem("Cheese"));

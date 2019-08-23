@@ -19,7 +19,8 @@ public:
 	Events() = default;
 	Events(Room& ui_current_room)
 		:current_room{ &ui_current_room } {}
-	static void eventList(Humanoid&, Room&, Room&);
+	static Room eventList(Humanoid&, Humanoid&, Room&, Room&);
+	static Room playerDeath(Humanoid&, int);
 };
 
 #endif

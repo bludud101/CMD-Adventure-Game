@@ -15,6 +15,7 @@ class Rooms
 	public:
 		static vector<Room> getRooms();
 		static Room getRoomFromId(int);
+		static Room getRoomFromName(string);
 		static vector<vector<vector<string>>> getMovementText();
 		static vector<vector<int>> getRoomFightChances();	
 };

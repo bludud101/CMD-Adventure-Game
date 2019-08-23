@@ -10,41 +10,53 @@
 #include "Player.h"
 
 using std::cout; using std::cin; using std::string; using std::vector;
-
-void Battle::potentialBattle(bool back, Humanoid& player, Room& current_room)
+// If old_room is a child of new_room, player went back, use backward battle odds. 
+// Otherwise assume player entered a child room and use forward battle odds. 
+// Return -1 for no battle, 1 for player surprised, 2 for player unsurprised.
+int Battle::foundBattle(Room& new_room, Room& old_room) 
 {
 	int i = 0;
 	int rand_option = 0;
+	if (new_room.nonBattleRoom() || old_room.nonBattleRoom())
+		return -1;
 	while (i < 1)
 	{
 		rand_option = Tools::getOneInThree();
-		if (back) rand_option += 3;
-		//cout << "Room ID:" << room_id << "Rand Option:" << rand_option << "/n";
-		if (Tools::getOutOfHundred(current_room.getFightChances()[rand_option])) ++i;
+		//Get random of three options (No battle, surprised battle, and unsurprised battle).
+		//If true, use back battle odds by adding 3 to get proper elements. 
+		if (old_room.getParent() == new_room.getName())
+			rand_option += 3;
+		//Takes selected option, which has odds (out of a hundred) and compares them to a random number from 0 to 100.
+		//If selected option is the bigger number, continues. Otherwise tries again with a potentially different option. 
+		if (Tools::getOutOfHundred(new_room.getFightChances()[rand_option])) ++i;
 	}
-	cout << current_room.getMovementText()[rand_option][0] << "\n";
+	cout << new_room.getMovementText()[rand_option][0] << "\n";
 	// 0 and 3 are both successful moves into another room without confrontation. 
-	if (rand_option == 1 || rand_option == 4) newBattle(false, player);
-	else if (rand_option != 0 && rand_option != 3) newBattle(true, player);
+	if (rand_option == 0 || rand_option == 3) 
+		return -1;
+	//if surprised. (1 or 4)
+	else if (rand_option == 1 || rand_option == 4)
+		return 1;
+	//finally, assume unsurprised (2 or 5).
+	return 2;
 };
 
-void Battle::newBattle(bool player_first, Humanoid& player)
+void Battle::newBattle(bool player_first, Humanoid& player, Humanoid& enemy)
 {
-	Humanoid enemy = Enemies::makeEnemy(0);
 	bool first_attack = false, successful_run = false;
 
 	if (player_first)
 	{
 		first_attack = true;
 		cout << player.getHumanoidName() << " got the jump on the " << enemy.getHumanoidName() << "!\n";
-		playerAttack(player, enemy, successful_run);
+		//playerAttack(player, enemy, successful_run);
 	} 
 	else attackOpponent(enemy, player);
 	if (first_attack && enemy.getAttribute("health") > 0 && !successful_run) attackOpponent(enemy, player);
 
 	while (enemy.getAttribute("health") > 0 && player.getAttribute("health") > 0 && !successful_run)
 	{
-		playerAttack(player, enemy, successful_run);
+		//playerAttack(player, enemy, successful_run);
 		if (enemy.getAttribute("health") > 0 && !successful_run) attackOpponent(enemy, player);
 	}
 
@@ -100,18 +112,12 @@ bool Battle::luckAttempt(Humanoid& attemper, Humanoid& defender, int required_nu
 
 }
 
-void Battle::playerAttack(Humanoid& player, Humanoid& enemy, bool& successful_run)
+bool Battle::playerRunAttempt(Humanoid& player, Humanoid& enemy)
 {
-	int player_choice = UI::battleUI(player, enemy);
-	if (player_choice == 0) attackOpponent(player, enemy);
-	if (player_choice == 4)
-	{
-		if (luckAttempt(player, enemy, 80))
-			successful_run = true;
-		else 
-		{
-			cout << "\nThe " << enemy.getHumanoidName() << " spits on you and keeps you contained!\n";
-			UI::promptUser();
-		}
-	}
+	if (luckAttempt(player, enemy, 80))
+		return true;
+
+	cout << "\nThe " << enemy.getHumanoidName() << " spits on you and keeps you contained!\n";
+	UI::promptUser();
+	return false;
 }

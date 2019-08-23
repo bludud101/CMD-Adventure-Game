@@ -11,11 +11,11 @@ using std::cout; using std::cin; using std::string; using std::vector;
 class Battle
 {
 	public:
-		static void potentialBattle(bool, Humanoid&, Room&);
-		static void newBattle(bool, Humanoid&);
+		static int foundBattle(Room&, Room&);
+		static void newBattle(bool, Humanoid&, Humanoid&);
 		static void attackOpponent(Humanoid&, Humanoid&);
 		static bool luckAttempt(Humanoid&, Humanoid&, int);
-		static void playerAttack(Humanoid&, Humanoid&, bool&);
+		static bool playerRunAttempt(Humanoid&, Humanoid&);
 	private:
 };
 

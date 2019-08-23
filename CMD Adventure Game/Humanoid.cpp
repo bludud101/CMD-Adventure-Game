@@ -35,6 +35,7 @@ void Humanoid::eatItem(int id)
 		decrimentAndCheck(id);
 		cout << getItem(id).getAttribute("durability") << " uses remaining.";
 	}
+	++item_interactions;
 }
 
 void Humanoid::decrimentAndCheck(int id)
@@ -90,6 +91,7 @@ void Humanoid::removeItem(int id)
 			inventory.erase(inventory.begin() + i);
 		++i;
 	}
+	++item_interactions;
 }
 
 void Humanoid::equipItem(int id, bool display_message)
@@ -114,6 +116,7 @@ void Humanoid::equipItem(int id, bool display_message)
 		getItem(id).setEquipped(true);
 		if (display_message) cout << getItem(id).getItemText()[3] << "\n";
 	}
+	++item_interactions;
 }
 void Humanoid::unequipItem(int id, bool display_message)
 {
@@ -124,6 +127,7 @@ void Humanoid::unequipItem(int id, bool display_message)
 		if (display_message) cout << getItem(id).getItemText()[4] << "\n";
 	}
 	else cout << "This item was not equipped!";
+	++item_interactions;
 }
 
 Item Humanoid::getEquippedOfType(int equip_type)

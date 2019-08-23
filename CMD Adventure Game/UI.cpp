@@ -16,50 +16,31 @@
 #include "Battle.h"
 
 using std::cout; using std::cin; 
-vector<Room> current_children;
 
-void UI::UILoop(Humanoid& player, Room& current_room)
-{
-	//cout << "Health: " << enemy.attributes.getAttribute("health") << "Food:" << enemy.attributes.getAttribute("food") << "Weapon:" << enemy.inventory.returnItems()[0].attributes.getAttribute("offense");
-	int i = 0;
-	while(i < 1)
-	{
-		getChildren(player, current_room);
-		//cout << current_children[0].getDestinationName();
-		Room temp_room = current_children[returnRoom(current_children)];
-		Events::eventList(player, current_room, temp_room);
-	}
-}
-
-void UI::getChildren(Humanoid& player, Room& current_room)
+vector<Room> UI::getChildren(Humanoid& player, Room& current_room, bool in_battle)
 {
 	vector<Room> child_rooms;
 	unsigned int i = 0;
 	while (i < Rooms::getRooms().size())
 	{
-		if (current_room.getName() == Rooms::getRooms()[i].getParent())
+		if ((current_room.getName() == Rooms::getRooms()[i].getParent() 
+			 || Rooms::getRooms()[i].getParent() == "NONBATTLE") && !in_battle 
+			 || Rooms::getRooms()[i].getParent() == "ALL" 
+			 || (in_battle && Rooms::getRooms()[i].getParent() == "BATTLE"))
 		{
 			//cout << "Added " << rooms_list[i].room_name << " to " << room_name << std::endl;
 			child_rooms.push_back(Rooms::getRooms()[i]);
 		}
 		++i;
 	}
-	if (player.getItems().size() > 0)
-	{
-		child_rooms.push_back(Room("Inventory", current_room.getName(), "Inventory"));
-		//cout << "Parent is:" << rooms_list[i].getParent();
-	}
-
-	child_rooms.push_back(Room("My Stats", current_room.getName(), "My Stats"));
-	child_rooms.push_back(Room("Save", current_room.getName(), "Save"));
-	if (Storage::saveExists()) child_rooms.push_back(Room("Load", current_room.getName(), "Load"));
-	if (backAllowed(current_room)) child_rooms.push_back(Room("Back", current_room.getName(), current_room.getParent()));
-	current_children = child_rooms;
+	if (UI::backAllowed(current_room) && !in_battle)
+		child_rooms.push_back(Rooms::getRoomFromName(current_room.getParent()));
+	return child_rooms;
 }
 
 bool UI::backAllowed(Room& current_room)
 {
-	if (!(current_room.getParent() == "none")) return true;
+	if (!(current_room.getParent() == "NONE") && !current_room.getOneWay()) return true;
 	return false;
 }
 
@@ -126,6 +107,12 @@ bool UI::playerInventory(Humanoid& player, bool in_battle)
 {	
 	int i = 0;
 	unsigned int id = 0;
+	if (player.getItems().size() == 0)
+	{
+		cout << "My my, " << player.getHumanoidName() << ". You ain't got shit!\n";
+		UI::getUserResponse();
+		return false;
+	}
 	while (i < 1)
 	{
 		bool display_prompt = true;
@@ -203,7 +190,7 @@ bool UI::playerInventory(Humanoid& player, bool in_battle)
 			++i;
 			getUserResponse();
 		}
-		else if (i == 0 && display_prompt)
+		else if ((i == 0 || i == 2) && display_prompt)
 			promptUser();
 	}
 	if (i == 2) return true;
@@ -271,28 +258,6 @@ string UI::returnAsLower(string s)
 		c = tolower(c);
 	}
 	return s;
-}
-
-int UI::battleUI(Humanoid& player, Humanoid& enemy)
-{
-	vector<Room> battle_rooms;
-	battle_rooms.push_back(Room("Attack", "none", "Attack"));
-	battle_rooms.push_back(Room("My Stats", "none", "My Stats"));
-	battle_rooms.push_back(Room("Enemy Stats", "none", "Enemy Stats"));
-	if (player.getItems().size() > 0)
-		battle_rooms.push_back(Room("Inventory", "none", "Inventory"));
-	battle_rooms.push_back(Room("Run", "none", "Run"));
-	unsigned int i = 0;
-	while (i < 1)
-	{
-		int current_room = returnRoom(battle_rooms);
-		cout << "CURRENT ROOM NUM: " << current_room;
-		if (current_room == 0 || current_room == 4) return current_room;
-		if (current_room == 1) displayStats(player, true);
-		if (current_room == 2) displayStats(enemy, true);
-		else if (playerInventory(player, true)) return current_room;
-	}
-	return -1;
 }
 
 void UI::promptUser()
